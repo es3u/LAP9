@@ -1,0 +1,111 @@
+create database pharmacies;
+
+create table pharmacy(
+    id int primary key ,
+    name varchar(20)   not null unique ,
+    location varchar(15) not null
+);
+insert  into pharmacy values (1 , 'aldwaa' , 'Ryadh');
+insert  into pharmacy values (2 , 'alnhdi' , 'Ryadh');
+insert  into pharmacy values (3 , 'lemon' , 'Ryadh');
+insert  into pharmacy values (4 , 'knoz' , 'Ryadh');
+drop table pharmacy;
+update pharmacy set location = 'Damam' where id = 3 ;
+delete from pharmacy where id=4;
+select * from pharmacy;
+#drop table pharmacy;
+#--------------------------------------------------------------------------------------
+
+
+create table drugs(
+  drug_id int primary key  ,
+  price double ,
+
+  name varchar(20) unique not null ,
+
+
+  description varchar(100) not null  ,
+
+  quantity_in_stock int ,
+  expiry_date date not null ,
+  id_d int ,
+  foreign key (id_d) references pharmacy(id)
+);
+insert into drugs value (1 , 10.50 ,'panadol' , 'aaaaaaa' ,  100 , '2027-01-01' , 1) ;
+insert into drugs value (2 , 86.99 ,'cypralex' , 'bbbbbbb' ,  300 , '2026-01-01' , 2) ;
+insert into drugs value (3 , 7.99 ,'fivadol' , 'ccccccccc' ,  500 , '2026-01-01' , 3) ;
+
+update drugs set price=100 where  drug_id = 2 ;
+delete from drugs where drug_id=3;
+select * from drugs ;
+#drop table drugs;
+#----------------------------------------------------------------------------------------
+
+create table Prescriptions(
+    P_id int primary key ,
+    quantity int ,
+    type varchar(6) check ( type='weekly' or type= 'daily' )   ,
+    name varchar(20) ,
+    foreign key (name) references drugs(name)
+);
+
+
+insert into prescriptions value (1 , 1 , 'daily' , 'panadol');
+insert into prescriptions value (2 , 2 , 'daily' , 'cypralex');
+
+update prescriptions set type= 'weekly' where P_id=2 ;
+delete from prescriptions where P_id = 3 ;
+
+select * from prescriptions;
+#rop table prescriptions;
+#---------------------------------------------------------------------------------
+
+create table patients(
+    name varchar(20) unique not null ,
+    id int primary key ,
+    age int not null ,
+    P_id int ,
+    foreign key (P_id)references Prescriptions(P_id)
+);
+
+insert into patients value ('Essa' , 1 , 25 , 1);
+insert into patients value ('saleh' , 2 , 20 , 2);
+insert into  patients value ('ahmed' , 3 , 23 , 3) ;
+
+update patients set name = 'khaled' where id=2 ;
+delete from patients where name = 'ahmed' ;
+
+select * from patients;
+#drop table patients;
+#------------------------------------------------------------------------------------
+
+
+
+create table Bills(
+  bill_id int unique not null ,
+  date datetime DEFAULT CURRENT_TIMESTAMP ,
+    price double ,
+    drug_id int ,
+    name_p varchar(15) ,
+    primary key (drug_id , name_p),
+    foreign key (drug_id) references drugs(drug_id),
+    foreign key (name_p) references patients(name)
+
+);
+#drop table bills;
+
+insert into Bills values (1 ,CURRENT_TIMESTAMP , 20 ,1 , 'Essa' );
+insert into Bills values (2 ,CURRENT_TIMESTAMP , 40.50 ,2 , 'khaled' );
+
+update Bills set price = 100 where bill_id=1 ;
+
+delete from bills where bill_id = 2 ;
+select * from bills;
+
+
+
+
+
+
+
+
